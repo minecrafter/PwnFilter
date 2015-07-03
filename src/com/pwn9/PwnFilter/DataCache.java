@@ -151,7 +151,7 @@ public class DataCache {
 
     public synchronized void removePlayer(Player p) {
         onlinePlayers.remove(p);
-        playerPermissions.get(p).clear();
+        playerPermissions.removeAll(p);
     }
 
     private synchronized void updateCache() {
@@ -161,12 +161,6 @@ public class DataCache {
           grab the list of online players, and add it to the list.
          */
         if (queuedPlayerList.isEmpty()) {
-            // A quick "Sanity Check" that our internal list of online players matches
-            // The actual list of online players...
-            if (!onlinePlayers.containsAll(Arrays.asList(getOnlinePlayers()))) {
-                LogManager.logger.warning("Cached Player List is not equal to actual online player list!");
-            }
-
             if (onlinePlayers.size() > 0) {
                 queuedPlayerList.addAll(onlinePlayers);
             }
@@ -175,7 +169,7 @@ public class DataCache {
                 Player p = it.next();
                 if (!p.isOnline()) {
                     LogManager.logger.warning("Removing cached, but offline player: " + p.getName());
-                    playerPermissions.get(p).clear();
+                    playerPermissions.removeAll(p);
                     it.remove();
                 }
             }
